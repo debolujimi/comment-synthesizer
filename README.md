@@ -1,5 +1,10 @@
 # Comment Synthesizer
 
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![Tests](https://github.com/debolujimi/comment-synthesizer/actions/workflows/python-tests.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Release](https://img.shields.io/badge/Release-v1.0.0-blue)
+
 A Python-based Eskom response assistant for generating context-aware customer replies to loadshedding, outage, billing, and power-related messages.
 
 This project includes:
@@ -14,6 +19,10 @@ This project includes:
 - Normalizes user input and expands keyword variants for real-world phrasing
 - Provides helpful fallback responses when the message is vague or unrelated
 - Supports desktop, web, and mobile-friendly API access through a shared backend
+
+## Release
+
+This repository is tagged as `v1.0.0` and includes the desktop app, browser demo, and API layer ready for local use and extension.
 
 ## Project layout
 
