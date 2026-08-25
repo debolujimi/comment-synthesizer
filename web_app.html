@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eskom Response API Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f7fb;
+        color: #1f2933;
+        margin: 0;
+        padding: 32px;
+      }
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
+      h1 {
+        margin-top: 0;
+      }
+      textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 12px;
+        font-size: 16px;
+        box-sizing: border-box;
+        border-radius: 8px;
+        border: 1px solid #d9e2ec;
+      }
+      button {
+        margin-top: 12px;
+        background: #29ab87;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 18px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .response {
+        margin-top: 20px;
+        background: #eaf3f8;
+        border-radius: 8px;
+        padding: 16px;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Eskom Response Demo</h1>
+      <textarea id="message" placeholder="Type a message like: there is load shedding in my area"></textarea>
+      <button id="sendButton">Generate Response</button>
+      <div id="responseBox" class="response">Response will appear here.</div>
+    </div>
+
+    <script>
+      const messageInput = document.getElementById('message');
+      const responseBox = document.getElementById('responseBox');
+      const sendButton = document.getElementById('sendButton');
+
+      sendButton.addEventListener('click', async () => {
+        const message = messageInput.value.trim();
+        if (!message) {
+          responseBox.textContent = 'Please enter a message first.';
+          return;
+        }
+
+        responseBox.textContent = 'Generating response...';
+
+        try {
+          const res = await fetch('http://127.0.0.1:8000/respond', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+          });
+
+          const data = await res.json();
+          responseBox.textContent = data.response || 'No response returned.';
+        } catch (error) {
+          responseBox.textContent = 'Could not connect to the API. Start the server first with: uvicorn api:app --reload';
+        }
+      });
+    </script>
+  </body>
+</html>
