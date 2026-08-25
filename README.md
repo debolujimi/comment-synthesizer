@@ -1,55 +1,86 @@
-# App Comment Synthesizer
+# Comment Synthesizer
 
-A small Python project for generating Eskom-related response comments from user messages.
+A Python-based Eskom response assistant for generating context-aware customer replies to loadshedding, outage, billing, and power-related messages.
+
+This project includes:
+- a desktop Tkinter chat app
+- a FastAPI web API
+- a browser demo
+- a reusable rule-based response engine for Eskom-related comment generation
+
+## Features
+
+- Detects common Eskom customer concerns such as loadshedding, outages, billing, and no-power events
+- Normalizes user input and expands keyword variants for real-world phrasing
+- Provides helpful fallback responses when the message is vague or unrelated
+- Supports desktop, web, and mobile-friendly API access through a shared backend
 
 ## Project layout
 
-- `app.py` — Tkinter desktop application entry point
-- `comments_generation_wordnet_rulebased.py` — reusable Eskom response engine
-- `api.py` — FastAPI web API that exposes the engine to browsers and mobile clients
-- `web_app.html` — simple browser-based demo UI
-- `mobile_api_example.dart` — example mobile API call for Flutter-style clients
-- `test_comments_generation.py` — basic validation checks
-- `research/` — notebook-style analysis scripts kept separate from the app
-- `requirements.txt` — dependencies
+- `app.py` — desktop GUI entry point
+- `comments_generation_wordnet_rulebased.py` — core response and keyword-matching logic
+- `api.py` — FastAPI backend for web and mobile integration
+- `web_app.html` — browser demo UI
+- `web_app_react.html` — alternate browser chat interface
+- `mobile_api_example.dart` — example mobile API client
+- `test_comments_generation.py` — validation tests
+- `research/` — historical analysis scripts kept separate from the app
+- `requirements.txt` — Python dependencies
+- `desktop_app.spec` — PyInstaller packaging config
 
-## Run the desktop app
+## Quick start
 
-From the project folder, you can start it with either of these options:
+### Desktop app
 
-```bash
-python app.py
+```powershell
+cd "C:\Users\pc\Desktop\App Comment Synthesizer"
+.\.venv\Scripts\python.exe app.py
 ```
 
-On Windows, you can also use the launcher:
+Or run:
 
 ```bat
 start_app.bat
 ```
 
-## Run the web API
+### Web API
 
-```bash
-python -m uvicorn api:app --host 0.0.0.0 --port 8000
+```powershell
+cd "C:\Users\pc\Desktop\App Comment Synthesizer"
+.\.venv\Scripts\python.exe -m uvicorn api:app --host 0.0.0.0 --port 8000
 ```
 
-Or use:
+Or run:
 
 ```bat
 run_web_api.bat
 ```
 
-Then open `web_app.html` in the browser.
+Then open `web_app.html` in a browser.
 
-## Run tests
+### Windows app build
 
-```bash
-python -m unittest -q
+```powershell
+cd "C:\Users\pc\Desktop\App Comment Synthesizer"
+.\.venv\Scripts\python.exe -m PyInstaller desktop_app.spec
 ```
 
-## Typical usage
+The packaged app is created under the `dist` folder.
 
-- Type a message such as "there is load shedding in my area"
-- The engine matches the intent and returns a helpful Eskom-style response
-- Use the Clear button to reset the chat window
-- The same logic can be reused by the web API and mobile clients
+## Testing
+
+```powershell
+cd "C:\Users\pc\Desktop\App Comment Synthesizer"
+.\.venv\Scripts\python.exe -m unittest -q
+```
+
+## Example usage
+
+- "there is load shedding in my area"
+- "power outage in my area"
+- "no electricity"
+- "my bill is overdue"
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
