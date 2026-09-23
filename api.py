@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from comments_generation_wordnet_rulebased import translate_chat
 
@@ -9,14 +9,14 @@ app = FastAPI(title="App Comment Synthesizer API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
 class MessageRequest(BaseModel):
-    message: str
+    message: str = Field(min_length=1, max_length=1000)
 
 
 @app.get("/health")
