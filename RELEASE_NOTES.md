@@ -1,6 +1,6 @@
 # Release Notes
 
-## v1.0.0
+## Historical v1.0.0 development baseline
 
 ### Highlights
 - Added a desktop Tkinter app for generating Eskom-related responses.
@@ -26,5 +26,6 @@
 - Core logic works in desktop, API, and browser modes.
 
 ### Notes
+- The v1.0.0 label in this document describes the earlier private development baseline; no Git tag or GitHub Release currently exists for it.
 - The backend uses a rule-based system designed for explainability and fast local deployment.
 - This version is suitable for local Windows use, web integration, and further extension into broader response intelligence.

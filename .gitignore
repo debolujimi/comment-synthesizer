@@ -8,3 +8,16 @@ dist/
 *.spec.user
 .vscode/
 .DS_Store
+
+# Local configuration and sensitive artefacts
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.csv
+*.xlsx
+*.xls
+*.jsonl

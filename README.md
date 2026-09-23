@@ -3,93 +3,132 @@
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![Tests](https://github.com/debolujimi/comment-synthesizer/actions/workflows/python-tests.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
-![Release](https://img.shields.io/badge/Release-v1.0.0-blue)
 
-A Python-based Eskom response assistant for generating context-aware customer replies to loadshedding, outage, billing, and power-related messages.
+A Python-based, explainable rule-based response-assistance prototype for synthesising suggested replies to electricity-service messages about loadshedding, outages, billing, power interruptions and related topics.
 
-This project includes:
-- a desktop Tkinter chat app
-- a FastAPI web API
-- a browser demo
-- a reusable rule-based response engine for Eskom-related comment generation
+> **Independent prototype:** This project is not an official Eskom product and is not affiliated with or endorsed by Eskom. It does not use live Eskom operational data. Generated output is a suggested response template and must not be interpreted as confirmation of current grid conditions, outage status, restoration times, tariffs or account information.
+
+![Comment Synthesizer banner](banner.svg)
+
+## What the system does
+
+Comment Synthesizer normalises an incoming message, expands curated keyword variants, optionally enriches intent vocabulary with WordNet, scores matching intents, and selects a deterministic response template. The same response engine is exposed through a Tkinter desktop interface and a FastAPI endpoint.
+
+The current implementation is **rule-based and deterministic**. It does not use a trained machine-learning model, large language model or generative-AI API.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[Customer message] --> B[Text normalisation]
+    B --> C[Keyword and phrase matching]
+    C --> D[Intent scoring]
+    D --> E[Best matching intent]
+    E --> F[Suggested response template]
+    F --> G[Desktop UI]
+    F --> H[FastAPI]
+    H --> I[Browser or mobile client]
+```
 
 ## Features
 
-- Detects common Eskom customer concerns such as loadshedding, outages, billing, and no-power events
-- Normalizes user input and expands keyword variants for real-world phrasing
-- Provides helpful fallback responses when the message is vague or unrelated
-- Supports desktop, web, and mobile-friendly API access through a shared backend
-
-## Release
-
-This repository is tagged as `v1.0.0` and includes the desktop app, browser demo, and API layer ready for local use and extension.
+- Detects common electricity-service themes such as loadshedding, outages, billing, vandalism and no-power events.
+- Normalises case, punctuation, hyphenation and common phrase variants.
+- Uses curated intent vocabulary with optional WordNet synonym enrichment.
+- Applies deterministic scoring so specific phrases can outrank generic words.
+- Provides a helpful fallback when no intent is confidently matched.
+- Shares one response engine across desktop, API and browser/mobile examples.
+- Includes automated unit tests and GitHub Actions CI.
+- Supports Windows packaging with PyInstaller.
 
 ## Project layout
 
-- `app.py` — desktop GUI entry point
-- `comments_generation_wordnet_rulebased.py` — core response and keyword-matching logic
-- `api.py` — FastAPI backend for web and mobile integration
-- `web_app.html` — browser demo UI
-- `web_app_react.html` — alternate browser chat interface
-- `mobile_api_example.dart` — example mobile API client
-- `test_comments_generation.py` — validation tests
-- `research/` — historical analysis scripts kept separate from the app
-- `requirements.txt` — Python dependencies
-- `desktop_app.spec` — PyInstaller packaging config
+| Path | Purpose |
+| --- | --- |
+| `comments_generation_wordnet_rulebased.py` | Core normalisation, intent matching and response-template logic |
+| `app.py` | Tkinter desktop interface |
+| `api.py` | FastAPI interface |
+| `web_app.html` | Browser demonstration |
+| `web_app_react.html` | Alternate browser-style chat demonstration |
+| `mobile_api_example.dart` | Example Dart API client |
+| `test_comments_generation.py` | Automated validation tests |
+| `research/` | Historical research/analysis scripts; datasets are not included |
+| `.github/workflows/python-tests.yml` | Continuous-integration test workflow |
 
 ## Quick start
 
-### Desktop app
+### 1. Create a virtual environment
 
 ```powershell
-cd "C:\Users\pc\Desktop\App Comment Synthesizer"
-.\.venv\Scripts\python.exe app.py
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-Or run:
-
-```bat
-start_app.bat
-```
-
-### Web API
+### 2. Run the desktop application
 
 ```powershell
-cd "C:\Users\pc\Desktop\App Comment Synthesizer"
-.\.venv\Scripts\python.exe -m uvicorn api:app --host 0.0.0.0 --port 8000
+python app.py
 ```
 
-Or run:
-
-```bat
-run_web_api.bat
-```
-
-Then open `web_app.html` in a browser.
-
-### Windows app build
+### 3. Run the API
 
 ```powershell
-cd "C:\Users\pc\Desktop\App Comment Synthesizer"
-.\.venv\Scripts\python.exe -m PyInstaller desktop_app.spec
+python -m uvicorn api:app --host 127.0.0.1 --port 8000
 ```
 
-The packaged app is created under the `dist` folder.
+Then use the local API at `http://127.0.0.1:8000`. The included browser examples are configured for this local endpoint.
 
-## Testing
+### 4. Run the tests
 
 ```powershell
-cd "C:\Users\pc\Desktop\App Comment Synthesizer"
-.\.venv\Scripts\python.exe -m unittest -q
+python -m unittest -q
 ```
 
-## Example usage
+## API
 
-- "there is load shedding in my area"
-- "power outage in my area"
-- "no electricity"
-- "my bill is overdue"
+### Health check
 
-## License
+`GET /health`
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+### Generate a suggested response
+
+`POST /respond`
+
+Example request:
+
+```json
+{
+  "message": "there is a power outage in my area"
+}
+```
+
+The API accepts a non-empty message of up to 1,000 characters and returns the selected suggested response template.
+
+## Methodology and limitations
+
+The engine is a lightweight symbolic NLP prototype. Matching quality depends on the manually defined intent vocabulary, phrase normalisation and scoring heuristics. WordNet can enrich the vocabulary when its corpus is installed, but the curated vocabulary remains functional without it.
+
+The system does **not** verify a user's location, account, outage, loadshedding stage, restoration estimate, tariff or any other live operational fact. Human review is appropriate before using generated templates in real customer communication.
+
+The `research/` directory contains historical analysis code that references local/Colab dataset paths. The underlying datasets are intentionally not distributed in this repository.
+
+## Security and privacy
+
+- No credentials or operational datasets are required for the core application.
+- Local environment files, private keys, spreadsheets and common dataset formats are excluded by `.gitignore`.
+- The demonstration API does not implement authentication and should not be exposed directly to the public internet without an appropriate production gateway, authentication/authorisation, rate limiting, restricted CORS and deployment hardening.
+- The API does not intentionally persist submitted messages.
+
+See [SECURITY.md](SECURITY.md) for responsible reporting and deployment notes.
+
+## Licence
+
+Released under the [MIT License](LICENSE).
+
+## Author
+
+**Peter Olujimi**
+
+This repository presents the software-engineering and explainable NLP prototype for public review and extension.

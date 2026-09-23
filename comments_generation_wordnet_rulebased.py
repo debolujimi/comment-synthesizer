@@ -3,8 +3,6 @@ import re
 import nltk
 from nltk.corpus import wordnet
 
-nltk.download("wordnet", quiet=True)
-nltk.download("omw-1.4", quiet=True)
 
 DICT_INTENT = {
     "intents": [
@@ -214,7 +212,14 @@ def _build_keyword_map():
         tag = intent["tag"]
         synonyms = {tag.lower()}
 
-        for syn in wordnet.synsets(tag):
+        try:
+            synsets = wordnet.synsets(tag)
+        except LookupError:
+            # WordNet enrichment is optional. The curated synonym set below
+            # keeps the response engine functional in offline installations.
+            synsets = []
+
+        for syn in synsets:
             for lemma in syn.lemmas():
                 cleaned = _normalize_text(lemma.name())
                 if cleaned:
@@ -304,4 +309,4 @@ def translate_chat(user_input):
         return _fallback_response(cleaned_input)
 
     key = matched_intent if matched_intent in RESPONSE_DICT else "Unrelated messages"
-    return RESPONSE_DICT[key]
+    return "Suggested response template: " + RESPONSE_DICT[key]
